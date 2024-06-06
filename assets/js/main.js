@@ -1,47 +1,50 @@
+const pokemonList = document.getElementById("pokemonList");
+const loadMoreButton = document.getElementById("loadMoreButton");
 
-const offset = 0;
 const limit = 10;
-const url = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
+let offset = 0;
+const maxRecords = 151;
 
-//Processamento assíncrono
-//Por padrão o fetch usa o get
-//Quando der certo rode a função o "then"
-//Do contrário o "catch"
-//E independente do sucesso ou fracasso, roda o "finally"
+function loadPokemonItens(offset, limit) {
+  pokeApi.getPokemons(offset, limit).then((pokemons = []) => {
+    //Criando o novo HTML, com os pokemons da lista
+    //Lista de pokemons para uma Li e junta sem separador
+    const newHtml = pokemons
+      .map(
+        (pokemon) => ` <li class="pokemon ${pokemon.type}">
+    <span class="number">#${pokemon.number}</span>
+    <span class="name">${pokemon.name}</span>
 
-function convertPokemonToLi(pokemon) {
-    return`
-    <li class="pokemon">
-          <span class="number">#001</span>
-          <span class="name">${pokemon.name}</span>
+    <div class="details">
+      <ol class="types">
+        ${pokemon.types
+          .map((type) => `<li class="type ${type}">${type}</li>`)
+          .join("")}
+      </ol>
 
-          <div class="details">
-            <ol class="types">
-              <li class="type">grass</li>
-              <li class="type">poison</li>
-            </ol>
-
-            <img
-              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/1.svg"
-              alt=${pokemon.name}
-            />
-          </div>
-        </li>
-    `
+      <img
+        src="${pokemon.photo}"
+        alt=${pokemon.name}
+      />
+    </div>
+  </li>`
+      )
+      .join("");
+    pokemonList.innerHTML += newHtml;
+  });
 }
 
-const pokemonList = document.getElementById('pokemonList')
+loadPokemonItens(offset, limit);
+loadMoreButton.addEventListener("click", () => {
+  offset += limit;
 
+  const qtdRecordNextPage = offset + limit;
+  if (qtdRecordNextPage > maxRecords) {
+    const newLimit = maxRecords - offset;
+    loadPokemonItens(offset, newLimit);
 
-fetch(url)
-.then ((response) => response.json())
-.then((jsonBody)=> jsonBody.results) //Convertendo para Json
-.then((pokemons) => {
-    
-    for (let i = 0; i < pokemons.length; i++) {
-        const pokemon = pokemons[i];
-       pokemonList.innerHTML += convertPokemonToLi(pokemon)
-       
-    }
-}) 
-.catch ((error) => console.log(error))
+    loadMoreButton.parentElement.removeChild(loadMoreButton);
+  } else {
+    loadPokemonItens(offset, limit);
+  }
+});
