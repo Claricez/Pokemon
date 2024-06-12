@@ -5,6 +5,7 @@
 
 body {
   background-color: #f6f8fc;
+  margin: 0;
 }
 .content {
   height: 100vh;
@@ -25,3 +26,12 @@ body {
 .content h1 {
   margin: 0;
 }
+
+.link-pokemon{
+  text-decoration: none;
+}
+
+.link-pokemon a:active{
+text-decoration: none;
+}
+
