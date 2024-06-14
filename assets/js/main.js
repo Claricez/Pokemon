@@ -11,7 +11,7 @@ function loadPokemonItens(offset, limit) {
     //Lista de pokemons para uma Li e junta sem separador
     const newHtml = pokemons
       .map(
-        (pokemon) => ` <li class="pokemon ${pokemon.type}">
+        (pokemon) => ` <li data-id="${pokemon.number}" class="pokemon ${pokemon.type} pokemon-item">
     <span class="number">#${pokemon.number}</span>
     <span class="name">${pokemon.name}</span>
 
@@ -30,10 +30,21 @@ function loadPokemonItens(offset, limit) {
   </li>`
       )
       .join("");
+      
     pokemonList.innerHTML += newHtml;
+    addClickEventToPokemonItems();
   });
 }
-
+function addClickEventToPokemonItems(){
+  const pokemonItems = document.querySelectorAll('.pokemon-item');
+  pokemonItems.forEach(item => {
+      item.addEventListener('click', () => {
+          const id = item.getAttribute('data-id');
+          pokemon(id);
+      })
+  });
+}
+//Carregar mais pokemons
 loadPokemonItens(offset, limit);
 loadMoreButton.addEventListener("click", () => {
   offset += limit;
@@ -48,3 +59,6 @@ loadMoreButton.addEventListener("click", () => {
     loadPokemonItens(offset, limit);
   }
 });
+
+
+
