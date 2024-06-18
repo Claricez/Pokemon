@@ -17,9 +17,9 @@ function convertPokeApiDetailToPokemon(pokeDetail) {
   pokemon.weight = pokeDetail.weight;
 
   const abilities = pokeDetail.abilities.map((abilitiesSlot) => abilitiesSlot.ability.name);
-  const [abilitie] = abilities;
+  const [ability] = abilities;
   pokemon.abilities = abilities;
-  pokemon.abilitie = abilitie;
+  pokemon.ability = ability;
   return pokemon;
 }
 pokeApi.getPokemonDetail = (pokemon) => {
@@ -44,16 +44,16 @@ pokeApi.getPokemons = (offset = 0, limit = 20) => {
     .catch((error) => console.error(error));
 };
 
-pokeApi.getPokemon = (poke) =>{
-  const url = `https://pokeapi.co/api/v2/pokemon/${poke}`
-
+pokeApi.getPokemon = (id) => {
+  const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
   return pokeApi.getPokemonDetail(url);
-   
-}
+};
+
 
 Promise.all([
   fetch("https://pokeapi.co/api/v2/pokemon/1"),
   fetch("https://pokeapi.co/api/v2/pokemon/2"),
-]).then((results) => {
-  console.log(results);
-});
+]).then((responses) => Promise.all(responses.map(response => response.json())))
+  .then((results) => {
+    console.log(results);
+  });
