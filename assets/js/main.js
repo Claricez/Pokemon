@@ -7,8 +7,7 @@ const maxRecords = 151;
 
 function loadPokemonItens(offset, limit) {
   pokeApi.getPokemons(offset, limit).then((pokemons = []) => {
-    //Criando o novo HTML, com os pokemons da lista
-    //Lista de pokemons para uma Li e junta sem separador
+   
     const newHtml = pokemons
       .map(
         (pokemon) => ` <li data-id="${pokemon.number}" class="pokemon ${pokemon.type} pokemon-item">
@@ -41,11 +40,11 @@ function addClickEventToPokemonItems() {
       item.addEventListener('click', () => {
           const id = item.getAttribute('data-id');
           console.log('ID do Pokémon:', id);
-          window.location.href = `/assets/html/sobre-pokemon.html?id=${id}`;
+          localStorage.setItem('selectedPokemonId', id);  // Armazenar o ID no local storage
+          window.location.href = `sobre-pokemon.html`; // Redirecionar sem o parâmetro de ID
       });
   });
 }
-
 //Carregar mais pokemons
 loadPokemonItens(offset, limit);
 loadMoreButton.addEventListener("click", () => {
